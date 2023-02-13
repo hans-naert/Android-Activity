@@ -11,6 +11,8 @@ import com.example.androidactivity.databinding.ActivityFirstBinding
 
 class FirstActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFirstBinding
+
+    var number= 0;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFirstBinding.inflate(layoutInflater)
@@ -19,13 +21,53 @@ class FirstActivity : AppCompatActivity() {
         //val button1: Button =findViewById(R.id.button1)
         with(binding)
         {
+            if(savedInstanceState!=null) {
+                number = savedInstanceState.getInt("number")
+                textView.text=number.toString()
+            }
             button1.setOnClickListener {
                 val data = "Hello SecondActivity"
                 val intent = Intent(this@FirstActivity, SecondActivity::class.java)
                 intent.putExtra("extra_data", data)
                 startActivityForResult(intent,1)
             }
+
+            incrementVariableButton.setOnClickListener {
+                number++;
+                textView.text=number.toString();
+            }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("number", number)
+    }
+
+    private val tag = "FirstActivity"
+    override fun onStart() {
+        super.onStart()
+        Log.d(tag, "onStart")
+    }
+    override fun onResume() {
+        super.onResume()
+        Log.d(tag, "onResume")
+    }
+    override fun onPause() {
+        super.onPause()
+        Log.d(tag, "onPause")
+    }
+    override fun onStop() {
+        super.onStop()
+        Log.d(tag, "onStop")
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(tag, "onDestroy")
+    }
+    override fun onRestart() {
+        super.onRestart()
+        Log.d(tag, "onRestart")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

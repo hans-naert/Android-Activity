@@ -7,6 +7,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updatePadding
 import com.example.androidactivity.databinding.ActivityFirstBinding
 
 class FirstActivity : AppCompatActivity() {
@@ -17,8 +22,31 @@ class FirstActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityFirstBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //setContentView(R.layout.activity_first)
-        //val button1: Button =findViewById(R.id.button1)
+
+        // Set up the toolbar as the action bar
+        setSupportActionBar(binding.toolbar)
+
+        //configure systembar
+        val controller = WindowCompat.getInsetsController(window, window.decorView)
+        controller.isAppearanceLightStatusBars = true // This makes clock/battery icons DARK
+        //controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        //controller.hide(WindowInsetsCompat.Type.systemBars())
+
+        // Handle window insets for the Toolbar to support Edge-to-Edge
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Only update top padding for the toolbar to account for the status bar
+            v.updatePadding(top = systemBars.top)
+            insets
+        }
+        
+        // Handle bottom/left/right insets for the root layout if needed
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(left = systemBars.left, right = systemBars.right, bottom = systemBars.bottom)
+            insets
+        }
+
         with(binding)
         {
             if(savedInstanceState!=null) {
